@@ -284,7 +284,7 @@ export default function AdminPage() {
     setLoading(true);
     setStatus("Saving…");
     try {
-      const totalOdds = matches.reduce((acc, m) => acc * Number(m.odds), 1).toFixed(2);
+      const totalOdds = matches.reduce((acc, m) => acc * (isNaN(Number(m.odds)) ? 1 : Number(m.odds)), 1).toFixed(2);
       const firstKick = matches.reduce(
         (a, m) => new Date(m.kickoff).getTime() < new Date(a).getTime() ? m.kickoff : a,
         matches[0].kickoff
@@ -558,7 +558,7 @@ export default function AdminPage() {
                             </span>
                             <div style={{ fontSize: 11, color: DARK.textDim, marginTop: 2 }}>
                               {m.lg} · {m.mkt} → <strong style={{ color: tc }}>{m.pick}</strong>
-                              <span style={{ marginLeft: 8, color: DARK.text, fontWeight: 700 }}>@{m.odds}</span>
+                              <span style={{ marginLeft: 8, color: DARK.text, fontWeight: 700 }}>@{Number(m.odds).toFixed(2)}</span>
                               {m.hot && <span style={{ marginLeft: 6 }}>🔥</span>}
                             </div>
                           </div>

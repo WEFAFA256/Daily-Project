@@ -17,7 +17,7 @@ export async function saveSingleAccumAction(tier, acc) {
   }
 
   // Calculate total odds server-side for accuracy
-  const totalOdds = acc.matches.reduce((prod, m) => prod * Number(m.odds), 1);
+  const totalOdds = acc.matches.reduce((prod, m) => prod * (isNaN(Number(m.odds)) ? 1 : Number(m.odds)), 1);
 
   // Find the earliest kickoff to use as first_kickoff
   // datetime-local gives "YYYY-MM-DDTHH:mm" — append :00Z if no timezone
@@ -190,7 +190,7 @@ export async function updateAccumAction(accumId, tier, matches) {
     return str.length === 16 ? str + ':00.000Z' : new Date(str).toISOString();
   };
 
-  const totalOdds = matches.reduce((p, m) => p * Number(m.odds), 1);
+  const totalOdds = matches.reduce((p, m) => p * (isNaN(Number(m.odds)) ? 1 : Number(m.odds)), 1);
   const firstKickoff = matches
     .map(m => new Date(toISO(m.kickoff)).getTime())
     .reduce((earliest, t) => (t < earliest ? t : earliest), Infinity);

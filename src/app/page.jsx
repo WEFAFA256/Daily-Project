@@ -87,13 +87,13 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
             </div>
             <div style={{display:"flex",gap:5,alignItems:"center"}}>
               <span style={{fontSize:10,filter:"blur(5px)",userSelect:"none",background:t.border,padding:"2px 7px",borderRadius:5,color:t.textDim}}>███████</span>
-              <span style={{background:cfg.color,color:cfg.dark?"#000":"#fff",borderRadius:5,padding:"2px 8px",fontSize:12,fontWeight:900,filter:"blur(5px)",userSelect:"none"}}>{m.odds}</span>
+              <span style={{background:cfg.color,color:cfg.dark?"#000":"#fff",borderRadius:5,padding:"2px 8px",fontSize:12,fontWeight:900,filter:"blur(5px)",userSelect:"none"}}>{Number(m.odds).toFixed(2)}</span>
             </div>
           </div>
         ))}
         <div style={{display:"flex",justifyContent:"space-between",padding:"11px 14px",borderTop:`1px solid ${t.border}`,background:`${cfg.color}0C`}}>
           <span style={{fontSize:12,fontWeight:900,color:t.text}}>TOTAL ODDS</span>
-          <span style={{fontFamily:"'Russo One',sans-serif",fontSize:24,color:cfg.color}}>{accum.total_odds || accum.totalOdds}</span>
+          <span style={{fontFamily:"'Russo One',sans-serif",fontSize:24,color:cfg.color}}>{Number(accum.total_odds || accum.totalOdds).toFixed(2)}</span>
         </div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:11}}>
@@ -177,7 +177,7 @@ function AccumCard({ accum, dark, t }) {
                   <span style={{fontSize:11,color:t.textDim,fontWeight:900}}>{m.lg}</span>
                   {m.hot &&<span style={{fontSize:9,background:"#FF4D00",color:"#fff",borderRadius:5,padding:"2px 6px",fontWeight:900}}>🔥 HL</span>}
                 </div>
-                <span style={{fontSize:11,color:t.textDim,fontWeight:900}}>⏰ {new Date(m.kickoff).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span>
+                <span style={{fontSize:11,color:t.textDim,fontWeight:900}}>⏰ {new Date(m.kickoff).toLocaleTimeString('en-US',{hour:"2-digit",minute:"2-digit",hour12:true})} / {new Date(m.kickoff).toLocaleTimeString('en-GB',{hour:"2-digit",minute:"2-digit",hour12:false})}</span>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
                 <span style={{flex:1,fontWeight:900,fontSize:16,color:t.text}}>{m.h}</span>
@@ -199,7 +199,7 @@ function AccumCard({ accum, dark, t }) {
                     <div style={{fontSize:14,fontWeight:900,color:cfg.color}}>✅ {m.pick}</div>
                   </div>
                   <div style={{background:cfg.color,color:cfg.dark?"#000":"#fff",borderRadius:8,padding:"8px 14px",textAlign:"center",minWidth:55}}>
-                    <div style={{fontFamily:"'Russo One',sans-serif",fontSize:20,lineHeight:1}}>{m.odds}</div>
+                    <div style={{fontFamily:"'Russo One',sans-serif",fontSize:20,lineHeight:1}}>{Number(m.odds).toFixed(2)}</div>
                     <div style={{fontSize:8,letterSpacing:1,opacity:0.8,marginTop:1,fontWeight:900}}>ODDS</div>
                   </div>
                 </div>
@@ -223,7 +223,7 @@ function AccumCard({ accum, dark, t }) {
               <div style={{fontSize:13,color:t.textDim,fontWeight:900}}>{(accum.matches || []).length} Elite Picks</div>
             </div>
             <div style={{background:`linear-gradient(135deg,${cfg.color},${cfg.color}aa)`,color:cfg.dark?"#000":"#fff",borderRadius:14,padding:"12px 22px",textAlign:"center",boxShadow:`0 8px 20px ${cfg.color}44`}}>
-              <div style={{fontFamily:"'Russo One',sans-serif",fontSize:38,lineHeight:1}}>{accum.total_odds || accum.totalOdds}</div>
+              <div style={{fontFamily:"'Russo One',sans-serif",fontSize:38,lineHeight:1}}>{Number(accum.total_odds || accum.totalOdds).toFixed(2)}</div>
               <div style={{fontSize:9,letterSpacing:2,marginTop:3,opacity:0.9,fontWeight:900}}>TOTAL ODDS</div>
             </div>
           </div>
