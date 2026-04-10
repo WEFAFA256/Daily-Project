@@ -299,7 +299,7 @@ function AccumCard({ accum, dark, t, onRegenerate }) {
           <div style={{width:32,height:32,borderRadius:9,background:cfg.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{cfg.emoji}</div>
           <div>
             <div style={{fontFamily:"'Russo One',sans-serif",fontSize:14,color:cfg.color,letterSpacing:0.5}}>{cfg.label} ACCUMULATOR</div>
-            <div style={{fontSize:10,color:t.textDim,marginTop:1}}>{cfg.desc}</div>
+            <div style={{fontSize:10,color:t.textDim,marginTop:1,fontWeight:700}}>{cfg.desc}</div>
           </div>
         </div>
         {unlocked
@@ -324,16 +324,16 @@ function AccumCard({ accum, dark, t, onRegenerate }) {
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
                 <div style={{display:"flex",alignItems:"center",gap:5}}>
                   <span>{m.fl}</span>
-                  <span style={{fontSize:11,color:t.textDim,fontWeight:600}}>{m.lg}</span>
+                  <span style={{fontSize:11,color:t.textDim,fontWeight:700}}>{m.lg}</span>
                   {m.hot&&<span style={{fontSize:9,background:"#FF4D00",color:"#fff",borderRadius:5,padding:"1px 5px",fontWeight:700}}>🔥</span>}
                 </div>
                 <span style={{fontSize:11,color:t.textDim}}>⏰ {m.kickoff.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span>
               </div>
               {/* Teams always visible */}
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-                <span style={{flex:1,fontWeight:700,fontSize:15,color:t.text}}>{m.h}</span>
+                <span style={{flex:1,fontWeight:800,fontSize:15,color:t.text}}>{m.h}</span>
                 <span style={{fontSize:10,color:t.textDim,background:t.border,padding:"2px 8px",borderRadius:5,flexShrink:0}}>VS</span>
-                <span style={{flex:1,fontWeight:700,fontSize:15,color:t.text,textAlign:"right"}}>{m.a}</span>
+                <span style={{flex:1,fontWeight:800,fontSize:15,color:t.text,textAlign:"right"}}>{m.a}</span>
               </div>
               {/* Pick — blurred until unlocked */}
               <div style={{position:"relative"}}>
@@ -347,8 +347,8 @@ function AccumCard({ accum, dark, t, onRegenerate }) {
                   transition:"filter 0.6s ease",
                 }}>
                   <div>
-                    <div style={{fontSize:9,color:t.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>{m.mkt}</div>
-                    <div style={{fontSize:13,fontWeight:700,color:cfg.color}}>✅ {m.pick}</div>
+                    <div style={{fontSize:9,color:t.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2,fontWeight:800}}>{m.mkt}</div>
+                    <div style={{fontSize:13,fontWeight:800,color:cfg.color}}>✅ {m.pick}</div>
                   </div>
                   <div style={{background:cfg.color,color:cfg.dark?"#000":"#fff",borderRadius:7,padding:"6px 12px",textAlign:"center",minWidth:52}}>
                     <div style={{fontFamily:"'Russo One',sans-serif",fontSize:19,lineHeight:1}}>{m.odds}</div>
@@ -357,7 +357,7 @@ function AccumCard({ accum, dark, t, onRegenerate }) {
                 </div>
                 {!unlocked&&(
                   <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",gap:5,pointerEvents:"none"}}>
-                    <span>🔒</span><span style={{fontSize:11,fontWeight:700,color:t.textDim}}>Pay to reveal pick & odds</span>
+                    <span>🔒</span><span style={{fontSize:11,fontWeight:800,color:t.textDim}}>Pay to reveal pick & odds</span>
                   </div>
                 )}
               </div>
@@ -420,7 +420,7 @@ function AccumCard({ accum, dark, t, onRegenerate }) {
                   </>
                 : <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                     <span style={{color:cfg.color,fontSize:14}}>✅</span>
-                    <span style={{color:cfg.color,fontWeight:700,fontSize:13}}>Unlocked — good luck! 🍀</span>
+                    <span style={{color:cfg.color,fontWeight:800,fontSize:13}}>Unlocked — good luck! 🍀</span>
                   </div>
             }
           </div>
@@ -515,9 +515,9 @@ export default function App() {
   useEffect(()=>{const i=setInterval(()=>setLiveUsers(n=>n+Math.floor(Math.random()*5-1)),4500);return()=>clearInterval(i);},[]);
 
   return (
-    <div style={{background:t.bg,color:t.text,minHeight:"100vh",fontFamily:"'Outfit',sans-serif"}}>
+    <div style={{background:t.bg,color:t.text,minHeight:"100vh",fontFamily:"'Outfit',sans-serif",fontWeight:500}}>
       {/* NAV */}
-      <nav style={{position:"sticky",top:0,zIndex:99,background:dark?"rgba(3,10,6,0.97)":"rgba(245,255,248,0.97)",backdropFilter:"blur(20px)",borderBottom:`1px solid ${t.border}`,padding:"11px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <nav style={{position:"sticky",top:0,zIndex:99,background:dark?"rgba(0,0,0,0.95)":"rgba(242,255,245,0.95)",backdropFilter:"blur(20px)",borderBottom:`1px solid ${t.border}`,padding:"11px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:36,height:36,borderRadius:10,background:"#00D45E",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>⚽</div>
           <div>
@@ -548,7 +548,7 @@ export default function App() {
             <span style={{fontSize:11,color:"#00D45E",fontWeight:700,letterSpacing:1}}>📅 {new Date().toLocaleDateString("en-UG",{weekday:"long",day:"numeric",month:"long"})}</span>
           </div>
           <h1 style={{fontFamily:"'Russo One',sans-serif",fontSize:28,color:t.text,letterSpacing:0.5,marginBottom:6}}>AI-Powered <span style={{color:"#00D45E"}}>Accumulators</span></h1>
-          <p style={{fontSize:13,color:t.textDim,lineHeight:1.6}}>3 tiers · Live countdowns · Claude AI analysis</p>
+          <p style={{fontSize:13,color:t.textDim,lineHeight:1.6,fontWeight:500}}>3 tiers · Live countdowns · Claude AI analysis</p>
         </div>
 
         {/* Streak */}
@@ -633,5 +633,5 @@ export default function App() {
   );
 }
 
-const DARK  = { bg:"#030D06", surface:"#071209", border:"#0E2214", text:"#E6F4EA", textDim:"#3D6B4A" };
-const LIGHT = { bg:"#F2FFF5", surface:"#FFFFFF",  border:"#C5E8CC", text:"#1A3D22", textDim:"#5A8C66" };
+const DARK  = { bg:"#000000", surface:"#0C0F0D", border:"#1A241D", text:"#FFFFFF", textDim:"#7A9C84" };
+const LIGHT = { bg:"#F2FFF5", surface:"#FFFFFF",  border:"#C5E8CC", text:"#122D18", textDim:"#4A7356" };
