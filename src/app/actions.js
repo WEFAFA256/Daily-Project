@@ -7,14 +7,14 @@ const API_FOOTBALL_KEY = process.env.API_FOOTBALL_KEY;
 
 export async function getAIAnalysisAction(accum) {
   if (!GEMINI_API_KEY) {
-    return accum.matches.map(m => ({
-      id: m.id,
-      analysis: `${m.h} showed strong potential in their last outing. With ${m.mkt} being a consistent trend, this is a solid pick for today's ticket.`
+    return (accum.matches || []).map(m => ({
+      id: m.id || m.match_id,
+      analysis: `${m.h || m.home_team} showed strong potential in their last outing. With ${m.mkt || m.market} being a consistent trend, this is a solid pick for today's ticket.`
     }));
   }
 
-  const body = accum.matches.map(m =>
-    `Match: ${m.h} vs ${m.a} (${m.lg}). Pick:"${m.pick}" (${m.mkt}) @${m.odds}.`
+  const body = (accum.matches || []).map(m =>
+    `Match: ${m.h || m.home_team} vs ${m.a || m.away_team} (${m.lg || m.league}). Pick:"${m.pick}" (${m.mkt || m.market}) @${m.odds}.`
   ).join("\n");
 
   try {
@@ -40,10 +40,7 @@ export async function getAIAnalysisAction(accum) {
 }
 
 export async function fetchFixturesAction() {
-  if (!API_FOOTBALL_KEY) {
-     // Return null if no key so it falls back to pool
-     return null;
-  };
+  if (!API_FOOTBALL_KEY) return null;
   const today = new Date().toISOString().slice(0, 10);
   const TOP_LEAGUES = [39, 140, 135, 78, 61, 2, 3];
   
@@ -84,7 +81,6 @@ export async function fetchFixturesAction() {
 }
 
 export async function saveSingleAccumAction(tier, acc) {
-  // Save a single tier's accumulator
   const { data: accumData, error: accumError } = await supabase
     .from('daily_accums')
     .insert({ 
@@ -96,10 +92,7 @@ export async function saveSingleAccumAction(tier, acc) {
     .select()
     .single();
 
-  if (accumError) {
-      console.error("Save Accum Error:", accumError);
-      return null;
-  }
+  if (accumError) return null;
 
   const matchesToInsert = acc.matches.map(m => ({
     accum_id: accumData.id,
@@ -116,9 +109,7 @@ export async function saveSingleAccumAction(tier, acc) {
     is_hot: m.hot
   }));
 
-  const { error: matchError } = await supabase.from('match_details').insert(matchesToInsert);
-  if (matchError) console.error("Match Save Error:", matchError);
-  
+  await supabase.from('match_details').insert(matchesToInsert);
   return accumData;
 }
 
@@ -137,9 +128,24 @@ export async function getLatestAccumsAction() {
       .eq('date', new Date().toISOString().slice(0, 10))
       .order('created_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle(); // Use maybeSingle to avoid 406 errors
 
     if (!error && data) {
+      // Map DB fields to UI fields
+      data.matches = data.matches.map(m => ({
+        id: m.id,
+        h: m.home_team,
+        a: m.away_team,
+        lg: m.league,
+        fl: m.flag,
+        kickoff: m.kickoff,
+        mkt: m.market,
+        pick: m.pick,
+        odds: m.odds,
+        conf: m.confidence,
+        analysis: m.analysis,
+        hot: m.is_hot
+      }));
       results[tier] = data;
     }
   }
@@ -148,13 +154,13 @@ export async function getLatestAccumsAction() {
 }
 
 export async function checkUnlockStatusAction(phoneNumber, tier) {
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('unlocked_tickets')
         .select('*')
         .eq('phone_number', phoneNumber)
         .eq('tier', tier)
         .eq('date', new Date().toISOString().slice(0, 10))
-        .single();
+        .maybeSingle();
     
     return !!data;
 }
