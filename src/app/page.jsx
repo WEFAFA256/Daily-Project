@@ -130,14 +130,18 @@ function AccumCard({ accum, dark, t }) {
   const [payOpen, setPayOpen] = useState(false);
 
   useEffect(() => {
-    const isPaid = localStorage.getItem(`unlocked-${accum.tier}-${new Date().toISOString().slice(0,10)}`);
-    if (isPaid) setUnlocked(true);
-  }, [accum.tier]);
+    const unlockedId = localStorage.getItem(`unlocked-${accum.tier}-${new Date().toISOString().slice(0,10)}`);
+    if (unlockedId === accum.id) {
+      setUnlocked(true);
+    } else {
+      setUnlocked(accum.tier === "free");
+    }
+  }, [accum.tier, accum.id]);
 
   const handlePaid = (phone) => {
     setUnlocked(true);
     setPayOpen(false);
-    localStorage.setItem(`unlocked-${accum.tier}-${new Date().toISOString().slice(0,10)}`, "true");
+    localStorage.setItem(`unlocked-${accum.tier}-${new Date().toISOString().slice(0,10)}`, accum.id);
   };
 
   return (
