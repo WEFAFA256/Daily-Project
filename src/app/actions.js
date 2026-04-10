@@ -40,7 +40,10 @@ export async function getAIAnalysisAction(accum) {
 }
 
 export async function fetchFixturesAction() {
-  if (!API_FOOTBALL_KEY) return null;
+  if (!API_FOOTBALL_KEY) {
+     // Return null if no key so it falls back to pool
+     return null;
+  };
   const today = new Date().toISOString().slice(0, 10);
   const TOP_LEAGUES = [39, 140, 135, 78, 61, 2, 3];
   
@@ -54,7 +57,7 @@ export async function fetchFixturesAction() {
     );
 
     const matches = [];
-    results.forEach((res, i) => {
+    results.forEach((res) => {
       if (res.status === "fulfilled" && res.value.response) {
         res.value.response.forEach(fix => {
           matches.push({
@@ -73,53 +76,75 @@ export async function fetchFixturesAction() {
     });
 
     const uniqueMatches = Array.from(new Map(matches.map(m => [m.id, m])).values());
-    return uniqueMatches.length >= 10 ? uniqueMatches : null;
+    return uniqueMatches.length >= 2 ? uniqueMatches : null;
   } catch (error) {
     console.error("Fetch Fixtures Error:", error);
     return null;
   }
 }
 
-export async function saveDailyAccumsAction(accums) {
-  for (const [tier, acc] of Object.entries(accums)) {
-    const { data: accumData, error: accumError } = await supabase
-      .from('daily_accums')
-      .upsert({ tier, total_odds: acc.totalOdds, date: new Date().toISOString().slice(0, 10), first_kickoff: acc.matches[0].kickoff }, { onConflict: 'tier, date' })
-      .select()
-      .single();
+export async function saveSingleAccumAction(tier, acc) {
+  // Save a single tier's accumulator
+  const { data: accumData, error: accumError } = await supabase
+    .from('daily_accums')
+    .insert({ 
+        tier, 
+        total_odds: acc.totalOdds, 
+        date: new Date().toISOString().slice(0, 10), 
+        first_kickoff: acc.firstKick 
+    })
+    .select()
+    .single();
 
-    if (accumError) continue;
-
-    const matchesToInsert = acc.matches.map(m => ({
-      accum_id: accumData.id,
-      home_team: m.h,
-      away_team: m.a,
-      league: m.lg,
-      flag: m.fl,
-      kickoff: m.kickoff,
-      market: m.mkt,
-      pick: m.pick,
-      odds: m.odds,
-      confidence: m.conf,
-      analysis: m.analysis,
-      is_hot: m.hot
-    }));
-
-    await supabase.from('match_details').insert(matchesToInsert);
+  if (accumError) {
+      console.error("Save Accum Error:", accumError);
+      return null;
   }
+
+  const matchesToInsert = acc.matches.map(m => ({
+    accum_id: accumData.id,
+    home_team: m.h,
+    away_team: m.a,
+    league: m.lg,
+    flag: m.fl,
+    kickoff: m.kickoff,
+    market: m.mkt,
+    pick: m.pick,
+    odds: m.odds,
+    confidence: m.conf,
+    analysis: m.analysis,
+    is_hot: m.hot
+  }));
+
+  const { error: matchError } = await supabase.from('match_details').insert(matchesToInsert);
+  if (matchError) console.error("Match Save Error:", matchError);
+  
+  return accumData;
 }
 
-export async function getDailyAccumsAction() {
-  const { data, error } = await supabase
-    .from('daily_accums')
-    .select(`
-      *,
-      matches:match_details(*)
-    `)
-    .eq('date', new Date().toISOString().slice(0, 10));
+export async function getLatestAccumsAction() {
+  const tiers = ["free", "vip", "premium"];
+  const results = {};
 
-  if (error || !data || data.length === 0) return null;
-  return data;
+  for (const tier of tiers) {
+    const { data, error } = await supabase
+      .from('daily_accums')
+      .select(`
+        *,
+        matches:match_details(*)
+      `)
+      .eq('tier', tier)
+      .eq('date', new Date().toISOString().slice(0, 10))
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (!error && data) {
+      results[tier] = data;
+    }
+  }
+
+  return results;
 }
 
 export async function checkUnlockStatusAction(phoneNumber, tier) {
