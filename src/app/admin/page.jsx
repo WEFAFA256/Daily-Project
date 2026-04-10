@@ -44,7 +44,7 @@ function blankMatch() {
   return {
     h: "", a: "", lg: "", fl: "⚽", mkt: "Match Result",
     pick: "", odds: 1.8, conf: 90, analysis: "", hot: false,
-    kickoff: new Date().toISOString().slice(0, 16),
+    kickoff: new Date().toISOString(),
   };
 }
 
@@ -54,6 +54,14 @@ function formatDate(iso) {
     day: "2-digit", month: "short", year: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
+}
+
+function toLocalH5(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 // ─── Sub-component: single input row ─────────────────────────────────────────
@@ -113,8 +121,11 @@ function MatchCard({ match: m, index: i, total, onUpdate, onRemove }) {
         </label>
         <input
           type="datetime-local"
-          value={m.kickoff ? m.kickoff.slice(0, 16) : ""}
-          onChange={(e) => onUpdate(i, "kickoff", e.target.value)}
+          value={m.kickoff ? toLocalH5(m.kickoff) : ""}
+          onChange={(e) => {
+            const d = new Date(e.target.value);
+            if (!isNaN(d.getTime())) onUpdate(i, "kickoff", d.toISOString());
+          }}
           style={inputStyle}
         />
       </div>

@@ -23,8 +23,7 @@ export async function saveSingleAccumAction(tier, acc) {
   // datetime-local gives "YYYY-MM-DDTHH:mm" — append :00Z if no timezone
   const toISO = (str) => {
     if (!str) return new Date().toISOString();
-    // If it's already a full ISO string keep it, else treat as local time
-    return str.length === 16 ? str + ":00.000Z" : new Date(str).toISOString();
+    return new Date(str).toISOString();
   };
 
   const firstKickoff = acc.matches
@@ -187,7 +186,7 @@ export async function deleteAccumAction(accumId) {
 export async function updateAccumAction(accumId, tier, matches) {
   const toISO = (str) => {
     if (!str) return new Date().toISOString();
-    return str.length === 16 ? str + ':00.000Z' : new Date(str).toISOString();
+    return new Date(str).toISOString();
   };
 
   const totalOdds = matches.reduce((p, m) => p * (isNaN(Number(m.odds)) ? 1 : Number(m.odds)), 1);
