@@ -9,11 +9,11 @@ export const viewport = {
 
 export const metadata = {
   title: "PredictorUG - Expert Daily Tickets",
-  description: "Get researched football accumulators with expert analysis. The most reliable betting predictions in Uganda.",
+  description: "Get researched football tickets with expert analysis. The most reliable betting predictions in Uganda.",
   manifest: "/manifest.json",
   openGraph: {
     title: "PredictorUG - Expert Winning Tickets",
-    description: "Expertly researched football accumulators with pro analysis.",
+    description: "Expertly researched football tickets with pro analysis.",
     url: "https://predictor-ug.vercel.app",
     siteName: "PredictorUG",
     locale: "en_UG",

@@ -195,7 +195,7 @@ function EditModal({ accum, onClose, onSaved }) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
           <h2 style={{ fontFamily: "'Russo One', sans-serif", fontSize: 18, color: DARK.green, margin: 0 }}>
-            EDIT ACCUMULATOR
+            EDIT TICKET
           </h2>
           <button onClick={onClose} style={{
             background: "none", border: `1px solid ${DARK.border}`, borderRadius: 8,
@@ -278,7 +278,7 @@ export default function AdminPage() {
   // ── MANAGE TAB state ───────────────────────────────────────────────────────
   const [accums, setAccums] = useState([]);
   const [fetchingAccums, setFetchingAccums] = useState(false);
-  const [editTarget, setEditTarget] = useState(null); // accumulator being edited
+  const [editTarget, setEditTarget] = useState(null); // ticket being edited
   const [filterTier, setFilterTier] = useState("all");
   const [deletingId, setDeletingId] = useState(null);
 
@@ -327,7 +327,7 @@ export default function AdminPage() {
   }, [tab, loadAccums]);
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this accumulator? This cannot be undone.")) return;
+    if (!confirm("Delete this ticket? This cannot be undone.")) return;
     setDeletingId(id);
     const ok = await deleteAccumAction(id);
     if (ok) setAccums((prev) => prev.filter((a) => a.id !== id));
@@ -358,7 +358,7 @@ export default function AdminPage() {
         <div style={{ display: "flex", gap: 10, marginBottom: 32 }}>
           {[
             { key: "create", label: "✏️  Create Ticket" },
-            { key: "manage", label: "🗂️  Manage Accumulators" },
+            { key: "manage", label: "🗂️  Manage Tickets" },
           ].map(({ key, label }) => (
             <button
               key={key}
@@ -475,7 +475,7 @@ export default function AdminPage() {
             {/* List */}
             {fetchingAccums && (
               <div style={{ textAlign: "center", padding: 40, color: DARK.textDim, fontSize: 14 }}>
-                Loading accumulators…
+                Loading tickets…
               </div>
             )}
 
@@ -484,7 +484,7 @@ export default function AdminPage() {
                 textAlign: "center", padding: 50, color: DARK.textDim, fontSize: 14,
                 border: `1px dashed ${DARK.border}`, borderRadius: 14,
               }}>
-                No accumulators found.
+                No tickets found.
               </div>
             )}
 

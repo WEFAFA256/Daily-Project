@@ -144,13 +144,16 @@ function AccumCard({ accum, dark, t }) {
     localStorage.setItem(`unlocked-${accum.tier}-${new Date().toISOString().slice(0,10)}`, accum.id);
   };
 
+  const { expired } = useCountdown(accum.first_kickoff || accum.firstKick);
+  if (expired) return null;
+
   return (
     <div style={{background:t.surface,border:`1.5px solid ${unlocked?cfg.color+"66":t.border}`,borderRadius:20,overflow:"hidden",marginBottom:25,animation:"fadeUp 0.5s ease"}}>
       <div style={{background:dark?`${cfg.color}0E`:`${cfg.color}16`,borderBottom:`1px solid ${t.border}`,padding:"15px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>{cfg.emoji}</div>
           <div>
-            <div style={{fontFamily:"'Russo One',sans-serif",fontSize:14,color:cfg.color,letterSpacing:0.5}}>{cfg.label} ACCUMULATOR</div>
+            <div style={{fontFamily:"'Russo One',sans-serif",fontSize:14,color:cfg.color,letterSpacing:0.5}}>{cfg.label} TICKET</div>
             <div style={{fontSize:10,color:t.textDim,marginTop:1,fontWeight:900}}>{cfg.desc}</div>
           </div>
         </div>

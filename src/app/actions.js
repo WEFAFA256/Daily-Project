@@ -30,7 +30,7 @@ export async function saveSingleAccumAction(tier, acc) {
     .map(m => new Date(toISO(m.kickoff)).getTime())
     .reduce((earliest, t) => (t < earliest ? t : earliest), Infinity);
 
-  // --- Insert accumulator row ---
+  // --- Insert ticket row ---
   const { data: accumData, error: accumError } = await supabase
     .from('daily_accums')
     .insert({
@@ -74,7 +74,7 @@ export async function saveSingleAccumAction(tier, acc) {
     return null;
   }
 
-  console.log(`[saveSingleAccumAction] ✅ Saved ${tier} accumulator (id: ${accumData.id})`);
+  console.log(`[saveSingleAccumAction] ✅ Saved ${tier} ticket (id: ${accumData.id})`);
   return accumData;
 }
 
@@ -136,7 +136,7 @@ export async function checkUnlockStatusAction(phoneNumber, tier) {
   return !!data;
 }
 
-// ─── Admin: List ALL accumulators (all tiers, all dates) ────────────────────
+// ─── Admin: List ALL tickets (all tiers, all dates) ────────────────────
 export async function getAllAccumsAction() {
   const { data, error } = await supabase
     .from('daily_accums')
@@ -170,7 +170,7 @@ export async function getAllAccumsAction() {
   }));
 }
 
-// ─── Admin: Delete an accumulator (cascades to match_details) ───────────────
+// ─── Admin: Delete a ticket (cascades to match_details) ───────────────
 export async function deleteAccumAction(accumId) {
   // Delete match_details first (if no ON DELETE CASCADE)
   await supabase.from('match_details').delete().eq('accum_id', accumId);
@@ -182,7 +182,7 @@ export async function deleteAccumAction(accumId) {
   return true;
 }
 
-// ─── Admin: Update an accumulator's tier + matches ──────────────────────────
+// ─── Admin: Update a ticket's tier + matches ──────────────────────────
 export async function updateAccumAction(accumId, tier, matches) {
   const toISO = (str) => {
     if (!str) return new Date().toISOString();
