@@ -9,7 +9,7 @@ import {
 const TIERS = {
   free:    { label:"FREE",    emoji:"🌿", price:0,    color:"#4CAF50", dark:true,  desc:"2 daily picks · No payment needed" },
   vip:     { label:"VIP",     emoji:"⭐", price:1000,  color:"#F5C842", dark:true,  desc:"3 researched picks · High confidence" },
-  premium: { label:"PREMIUM", emoji:"💎", price:2500,  color:"#B388FF", dark:false, desc:"5 elite picks · Expert analysis" },
+  premium: { label:"PREMIUM", emoji:"💎", price:2500,  color:"#9D4EDD", dark:false, desc:"5 elite picks · Expert analysis" },
 };
 
 // ─── COMPONENTS ─────────────────────────────────────────────────────────────
@@ -128,6 +128,7 @@ function AccumCard({ accum, dark, t }) {
   const cfg = TIERS[accum.tier];
   const [unlocked, setUnlocked] = useState(accum.tier==="free");
   const [payOpen, setPayOpen] = useState(false);
+  const [activeAnalysis, setActiveAnalysis] = useState(null);
 
   useEffect(() => {
     const unlockedId = localStorage.getItem(`unlocked-${accum.tier}-${new Date().toISOString().slice(0,10)}`);
@@ -213,8 +214,9 @@ function AccumCard({ accum, dark, t }) {
                 )}
               </div>
               {unlocked&&(
-                <div style={{marginTop:10,background:dark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.035)",borderRadius:10,padding:"12px 14px",borderLeft:`4px solid ${cfg.color}88`,animation:"fadeUp 0.4s ease"}}>
-                  <p style={{fontSize:12,color:t.textDim,lineHeight:1.7,margin:0,fontWeight:800}}>{m.analysis}</p>
+                <div onClick={() => setActiveAnalysis(m.analysis)} style={{cursor:"pointer",marginTop:10,background:dark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.035)",borderRadius:10,padding:"12px 14px",borderLeft:`4px solid ${cfg.color}88`,animation:"fadeUp 0.4s ease",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <p style={{fontSize:12,color:t.textDim,lineHeight:1.7,margin:0,fontWeight:800}}>Tap to view analysis...</p>
+                  <span style={{fontSize:16,opacity:0.8}}>🔍</span>
                 </div>
               )}
             </div>
@@ -251,6 +253,17 @@ function AccumCard({ accum, dark, t }) {
             )}
           </div>
         </>
+      )}
+
+      {/* Analysis Modal */}
+      {activeAnalysis && (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",backdropFilter:"blur(5px)",zIndex:999,display:"flex",alignItems:"center",justifyContent:"center",padding:20,animation:"fadeUp 0.3s ease"}} onClick={(e) => {if(e.target===e.currentTarget) setActiveAnalysis(null)}}>
+          <div style={{background:t.surface,border:`1.5px solid ${cfg.color}`,borderRadius:16,padding:20,maxWidth:400,width:"100%",position:"relative",boxShadow:`0 10px 40px -10px ${cfg.color}88`}}>
+            <button onClick={() => setActiveAnalysis(null)} style={{position:"absolute",top:15,right:15,background:"none",border:"none",color:t.textDim,fontSize:20,cursor:"pointer"}}>✕</button>
+            <div style={{fontFamily:"'Russo One',sans-serif",fontSize:18,color:cfg.color,marginBottom:15}}>Match Analysis</div>
+            <p style={{fontSize:14,color:t.text,lineHeight:1.8,fontWeight:800}}>{activeAnalysis}</p>
+          </div>
+        </div>
       )}
     </div>
   );
