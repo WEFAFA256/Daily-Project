@@ -296,7 +296,7 @@ export default function App() {
     <div style={{background:t.bg,color:t.text,minHeight:"100vh",fontFamily:"'Outfit',sans-serif",fontWeight:800}}>
       <nav style={{position:"sticky",top:0,zIndex:99,background:dark?"rgba(0,0,0,0.96)":"rgba(242,255,245,0.96)",backdropFilter:"blur(20px)",borderBottom:`1.5px solid ${t.border}`,padding:"12px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:38,height:38,borderRadius:11,background:"#00D45E",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,boxShadow:"0 0 20px #00D45E66"}}>⚽</div>
+          <img src="/logo.png" alt="Logo" style={{width:38,height:38,borderRadius:11,boxShadow:"0 0 20px #00D45E66",objectFit:"cover"}} />
           <div>
             <div style={{fontFamily:"'Russo One',sans-serif",fontSize:18,letterSpacing:1,color:t.text}}>DAILY PREDICTOR<span style={{color:"#00D45E"}}> UG</span></div>
             <div style={{fontSize:9,color:t.textDim,letterSpacing:2,textTransform:"uppercase",fontWeight:900}}>Metric Data Insights</div>

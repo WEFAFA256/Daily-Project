@@ -12,13 +12,19 @@ export const metadata = {
   description: "Get the best football match analysis and daily prediction tickets in Uganda. Reliable stats for Sofascore and Flashscore users.",
   keywords: ["Daily Predictor", "Uganda football tips", "match analysis", "Metric Data Insights"],
   manifest: "/manifest.json",
-  openGraph: {
-    title: "Daily Predictor UG - Expert Football Analysis & Daily Tickets",
-    description: "Get the best football match analysis and daily prediction tickets in Uganda.",
-    url: "https://dailypredictor.site",
-    siteName: "Daily Predictor UG",
-    locale: "en_UG",
     type: "website",
+    images: [
+      {
+        url: "https://dailypredictor.site/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Daily Predictor UG Logo",
+      },
+    ],
+  },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
   verification: {
     google: "HwLffxN7kXaT6BfkGvNmxSYbjUkCB374_dFqDEZ3t9U",
@@ -29,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="icon" href="/logo.png" />
       </head>
       <body style={{ margin: 0 }}>{children}</body>
     </html>
