@@ -10,7 +10,7 @@ export const viewport = {
 export const metadata = {
   title: "Daily Predictor UG - Expert Football Analysis & Daily Tickets",
   description: "Get the best football match analysis and daily prediction tickets in Uganda. Reliable stats for Sofascore and Flashscore users.",
-  keywords: ["Daily Predictor", "Uganda football tips", "match analysis", "Victor Data Insights"],
+  keywords: ["Daily Predictor", "Uganda football tips", "match analysis", "Metric Data Insights"],
   manifest: "/manifest.json",
   openGraph: {
     title: "Daily Predictor UG - Expert Football Analysis & Daily Tickets",

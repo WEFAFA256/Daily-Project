@@ -299,7 +299,7 @@ export default function App() {
           <div style={{width:38,height:38,borderRadius:11,background:"#00D45E",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,boxShadow:"0 0 20px #00D45E66"}}>⚽</div>
           <div>
             <div style={{fontFamily:"'Russo One',sans-serif",fontSize:18,letterSpacing:1,color:t.text}}>DAILY PREDICTOR<span style={{color:"#00D45E"}}> UG</span></div>
-            <div style={{fontSize:9,color:t.textDim,letterSpacing:2,textTransform:"uppercase",fontWeight:900}}>Victor Data Insights</div>
+            <div style={{fontSize:9,color:t.textDim,letterSpacing:2,textTransform:"uppercase",fontWeight:900}}>Metric Data Insights</div>
           </div>
         </div>
         <button onClick={()=>setDark(!dark)} style={{width:36,height:36,borderRadius:"50%",border:`1.5px solid ${t.border}`,background:t.surface,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.3s"}}>
@@ -312,7 +312,7 @@ export default function App() {
           <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(0,212,94,0.1)",border:"1.5px solid rgba(0,212,94,0.3)",borderRadius:30,padding:"7px 20px",marginBottom:16}}>
             <span style={{fontSize:12,color:"#00D45E",fontWeight:900,letterSpacing:1.5}}>📅 {new Date().toLocaleDateString("en-UG",{weekday:"long",day:"numeric",month:"long"})}</span>
           </div>
-          <h1 style={{fontFamily:"'Russo One',sans-serif",fontSize:32,color:t.text,letterSpacing:0.5,marginBottom:8}}>Daily Predictor <span style={{color:"#00D45E"}}>UG</span></h1>
+          <h1 style={{fontFamily:"'Russo One',sans-serif",fontSize:26,color:t.text,letterSpacing:0.5,marginBottom:8}}>PRO ANALYZED <span style={{color:"#00D45E"}}>VIP TICKETS</span></h1>
           <p style={{fontSize:14,color:t.textDim,lineHeight:1.6,fontWeight:900}}>Expertly researched picks for today</p>
         </div>
 
@@ -343,7 +343,7 @@ export default function App() {
             highly researched match predictions.
           </p>
           <div style={{fontSize:12,color:t.textDim,fontWeight:900}}>
-            Powered by <span style={{color:"#00D45E"}}>Victor Data Insights</span>
+            Powered by <span style={{color:"#00D45E"}}>Metric Data Insights</span>
           </div>
         </div>
       </div>
