@@ -349,6 +349,9 @@ export default function AdminPage() {
     const ok = await verifyPaymentAction(id);
     if (ok) {
       setPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'verified' } : p));
+      alert("Success! Ticket has been unlocked for the user.");
+    } else {
+      alert("Verification failed. Check your database connection.");
     }
     setVerifyingId(null);
   };

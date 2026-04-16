@@ -97,11 +97,16 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
     if(!trId) return;
     setPaying(true);
     try {
-      await requestPaymentAction(phone, payMethod, accum.tier, cfg.price, trId);
-      setIsPending(true);
-      setShowTrModal(false);
+      const res = await requestPaymentAction(phone, payMethod, accum.tier, cfg.price, trId);
+      if (res.success) {
+        setIsPending(true);
+        setShowTrModal(false);
+      } else {
+        alert("Submission failed: " + (res.error?.message || "Check if payment_requests table exists."));
+      }
     } catch (e) {
       console.error(e);
+      alert("An unexpected error occurred during submission.");
     }
     setPaying(false);
   };
