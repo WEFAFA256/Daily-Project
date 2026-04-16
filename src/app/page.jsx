@@ -71,6 +71,9 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
   const [phone, setPhone] = useState("");
   const [paying, setPaying] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showTrModal, setShowTrModal] = useState(false);
+  const [trId, setTrId] = useState("");
+  const [isPending, setIsPending] = useState(false);
 
   const PAY_NUMBERS = {
     mtn: "0765040502",
@@ -87,27 +90,79 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
 
   const go = async () => { 
     if(phone.length < 9) return; 
-    setPaying(true); 
-    
-    // Log the payment request
-    try {
-      await requestPaymentAction(phone, payMethod, accum.tier, cfg.price);
-    } catch (e) {
-      console.warn("Could not log payment:", e);
-    }
-
-    // Simulate verification
-    setTimeout(() => { 
-      setPaying(false); 
-      onPaid(phone); 
-    }, 3000); 
+    setShowTrModal(true);
   };
+
+  const submitTr = async () => {
+    if(!trId) return;
+    setPaying(true);
+    try {
+      await requestPaymentAction(phone, payMethod, accum.tier, cfg.price, trId);
+      setIsPending(true);
+      setShowTrModal(false);
+    } catch (e) {
+      console.error(e);
+    }
+    setPaying(false);
+  };
+
+  if (isPending) {
+    return (
+      <div style={{padding:"40px 20px", textAlign:"center", animation:"fadeUp 0.3s ease"}}>
+        <div style={{fontSize:40, marginBottom:20}}>⏳</div>
+        <div style={{fontFamily:"'Russo One',sans-serif", fontSize:20, color:cfg.color, marginBottom:10}}>VERIFICATION PENDING</div>
+        <p style={{fontSize:13, color:t.textDim, lineHeight:1.6, fontWeight:800}}>
+          We received your request with ID <strong>{trId}</strong>. <br/>
+          Our team is manually verifying your payment now. <br/>
+          <span style={{color:t.text}}>The ticket will unlock automatically usually within 5-15 minutes.</span>
+        </p>
+        <button onClick={onBack} style={{marginTop:20, background:t.surface, border:`1px solid ${t.border}`, borderRadius:10, padding:"10px 20px", color:t.textDim, fontWeight:800, cursor:"pointer"}}>Close & Wait</button>
+      </div>
+    );
+  }
 
   return (
     <div style={{padding:"18px", animation:"fadeUp 0.3s ease"}}>
       <button onClick={onBack} style={{background:"none", border:"none", color:t.textDim, cursor:"pointer", fontSize:13, fontWeight:800, marginBottom:14, padding:0, display:"flex", alignItems:"center", gap:5}}>
         <span style={{fontSize:16}}>←</span> Back to Ticket
       </button>
+
+      {/* TrID Modal Overlay */}
+      {showTrModal && (
+        <div style={{position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(5px)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:20, animation:"fadeUp 0.2s ease"}}>
+          <div style={{background:t.surface, border:`2px solid ${cfg.color}`, borderRadius:20, padding:25, width:"100%", maxWidth:360, position:"relative", boxShadow:`0 10px 40px -10px ${cfg.color}88`}}>
+            <button onClick={()=>setShowTrModal(false)} style={{position:"absolute", top:15, right:15, background:"none", border:"none", color:t.textDim, fontSize:20, cursor:"pointer"}}>✕</button>
+            <div style={{textAlign:"center", marginBottom:20}}>
+              <div style={{fontSize:30, marginBottom:10}}>🆔</div>
+              <div style={{fontFamily:"'Russo One',sans-serif", fontSize:19, color:cfg.color}}>TRANSACTION ID</div>
+              <p style={{fontSize:11, color:t.textDim, marginTop:5, fontWeight:800}}>Enter the ID from your MoMo/Airtel SMS receipt</p>
+            </div>
+            
+            <input 
+              value={trId} 
+              onChange={e=>setTrId(e.target.value)} 
+              placeholder="e.g. 192837465..."
+              autoFocus
+              style={{
+                width:"100%", padding:"15px", background:t.bg, border:`1.5px solid ${trId?cfg.color:t.border}`, borderRadius:14, 
+                color:t.text, fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:800, outline:"none", textAlign:"center",
+                transition:"all 0.2s", marginBottom:20
+              }}
+            />
+
+            <button onClick={submitTr} disabled={paying || !trId} style={{
+              width:"100%", padding:"16px",
+              background: paying || !trId ? t.border : `linear-gradient(135deg, ${cfg.color}, ${cfg.color}bb)`,
+              color: paying || !trId ? t.textDim : (cfg.dark ? "#000" : "#fff"),
+              border:"none", borderRadius:14, fontFamily:"'Russo One',sans-serif", fontSize:16, letterSpacing:1,
+              cursor: paying || !trId ? "not-allowed" : "pointer", transition:"all 0.3s",
+              display:"flex", alignItems:"center", justifyContent:"center", gap:10
+            }}>
+              {paying ? "SUBMITTING..." : "VERIFY NOW →"}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div style={{textAlign:"center", marginBottom:20}}>
         <div style={{fontSize:28, marginBottom:8}}>{cfg.emoji}</div>

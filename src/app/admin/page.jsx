@@ -7,6 +7,7 @@ import {
   deleteAccumAction,
   updateAccumAction,
   getPaymentRequestsAction,
+  verifyPaymentAction,
 } from "../actions";
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
@@ -288,6 +289,7 @@ export default function AdminPage() {
   // ── PAYMENTS TAB state ──────────────────────────────────────────────────────
   const [payments, setPayments] = useState([]);
   const [fetchingPayments, setFetchingPayments] = useState(false);
+  const [verifyingId, setVerifyingId] = useState(null);
 
   // ── Helpers: Create tab ────────────────────────────────────────────────────
   const addMatch = () => setMatches([...matches, blankMatch()]);
@@ -339,6 +341,16 @@ export default function AdminPage() {
     const data = await getPaymentRequestsAction();
     setPayments(data);
     setFetchingPayments(false);
+  };
+
+  const handleVerify = async (id) => {
+    if (!confirm("Verify this payment? This will unlock the ticket for the user.")) return;
+    setVerifyingId(id);
+    const ok = await verifyPaymentAction(id);
+    if (ok) {
+      setPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'verified' } : p));
+    }
+    setVerifyingId(null);
   };
 
   const handleDelete = async (id) => {
@@ -616,16 +628,42 @@ export default function AdminPage() {
               <div style={{ textAlign: "center", padding: 50, border: `1px dashed ${DARK.border}`, borderRadius: 14, color: DARK.textDim }}>No payment requests yet.</div>
             ) : (
               payments.map((p, i) => (
-                <div key={p.id || i} style={{ background: DARK.surface, border: `1px solid ${DARK.border}`, borderRadius: 12, padding: 15, marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 900, color: DARK.text }}>+256 {p.phone_number}</div>
-                    <div style={{ fontSize: 11, color: DARK.textDim, marginTop: 4 }}>
-                      <span style={{ color: p.method === "mtn" ? DARK.amber : DARK.red, fontWeight: 900, textTransform: "uppercase" }}>{p.method}</span> • {p.tier?.toUpperCase()} • {formatDate(p.created_at)}
+                <div key={p.id || i} style={{ background: DARK.surface, border: `1px solid ${p.status==='verified'?DARK.green:DARK.border}`, borderRadius: 14, padding: 18, marginBottom: 15, display: "flex", justifyContent: "space-between", alignItems: "center", animation:"fadeUp 0.3s ease" }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5 }}>
+                      <span style={{ fontSize: 15, fontWeight: 900, color: DARK.text }}>+256 {p.phone_number}</span>
+                      {p.status === 'verified' && <span style={{ background: DARK.green, color: "#000", fontSize: 9, fontWeight: 900, padding: "2px 8px", borderRadius: 20 }}>VERIFIED</span>}
+                    </div>
+                    <div style={{ fontSize: 11, color: DARK.textDim, display: "flex", gap: 12, alignItems: "center" }}>
+                      <span style={{ color: p.method === "mtn" ? DARK.amber : DARK.red, fontWeight: 900, textTransform: "uppercase" }}>{p.method}</span>
+                      <span style={{ opacity: 0.3 }}>|</span>
+                      <span>{p.tier?.toUpperCase()} TICKET</span>
+                      <span style={{ opacity: 0.3 }}>|</span>
+                      <span>{formatDate(p.created_at)}</span>
+                    </div>
+                    <div style={{ marginTop: 10, background: DARK.bg, borderRadius: 8, padding: "8px 12px", border: `1px solid ${DARK.border}`, display: "inline-block" }}>
+                      <span style={{ fontSize: 10, color: DARK.textDim, fontWeight: 800, marginRight: 8 }}>TX ID:</span>
+                      <span style={{ fontSize: 12, color: DARK.green, fontWeight: 900, fontFamily: "monospace" }}>{p.transaction_id || "N/A"}</span>
                     </div>
                   </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 14, fontWeight: 900, color: DARK.green }}>UGX {p.amount?.toLocaleString()}</div>
-                    <div style={{ fontSize: 10, color: DARK.textDim, marginTop: 4, fontWeight: 800 }}>STATUS: PENDING</div>
+                  
+                  <div style={{ textAlign: "right", marginLeft: 20 }}>
+                    <div style={{ fontSize: 17, fontWeight: 900, color: DARK.text, marginBottom: 8 }}>UGX {p.amount?.toLocaleString()}</div>
+                    {p.status === 'pending' ? (
+                      <button 
+                        onClick={() => handleVerify(p.id)} 
+                        disabled={verifyingId === p.id}
+                        style={{ 
+                          background: DARK.green, color: "#000", border: "none", borderRadius: 8, 
+                          padding: "8px 16px", fontSize: 12, fontWeight: 900, cursor: "pointer",
+                          boxShadow: `0 4px 12px ${DARK.green}44`
+                        }}
+                      >
+                        {verifyingId === p.id ? "..." : "✅ VERIFY"}
+                      </button>
+                    ) : (
+                      <div style={{ color: DARK.textDim, fontSize: 11, fontWeight: 800 }}>COMPLETED</div>
+                    )}
                   </div>
                 </div>
               ))

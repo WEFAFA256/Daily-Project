@@ -234,7 +234,7 @@ export async function updateAccumAction(accumId, tier, matches) {
   return true;
 }
 
-export async function requestPaymentAction(phone, method, tier, price) {
+export async function requestPaymentAction(phone, method, tier, price, trId) {
   const { data, error } = await supabase
     .from('payment_requests')
     .insert({
@@ -242,6 +242,7 @@ export async function requestPaymentAction(phone, method, tier, price) {
       method,
       tier,
       amount: price,
+      transaction_id: trId,
       status: 'pending',
       date: new Date().toISOString().slice(0, 10),
     })
@@ -253,6 +254,49 @@ export async function requestPaymentAction(phone, method, tier, price) {
     return { success: false, error };
   }
   return { success: true, data };
+}
+
+export async function verifyPaymentAction(requestId) {
+  // 1. Get the request details
+  const { data: req, error: fetchErr } = await supabase
+    .from('payment_requests')
+    .select('*')
+    .eq('id', requestId)
+    .single();
+
+  if (fetchErr || !req) {
+    console.error("[verifyPaymentAction] Fetch Error:", fetchErr);
+    return false;
+  }
+
+  // 2. Update request status
+  const { error: updateErr } = await supabase
+    .from('payment_requests')
+    .update({ status: 'verified' })
+    .eq('id', requestId);
+
+  if (updateErr) {
+    console.error("[verifyPaymentAction] Update Error:", updateErr);
+    return false;
+  }
+
+  // 3. Unlock the ticket for the user
+  const { error: unlockErr } = await supabase
+    .from('unlocked_tickets')
+    .insert({
+      phone_number: req.phone_number,
+      tier: req.tier,
+      date: req.date
+    });
+
+  if (unlockErr) {
+    // If it already exists, that's fine
+    if (unlockErr.code !== '23505') { 
+      console.error("[verifyPaymentAction] Unlock Error:", unlockErr);
+    }
+  }
+
+  return true;
 }
 
 export async function getPaymentRequestsAction() {
