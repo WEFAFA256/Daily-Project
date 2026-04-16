@@ -269,20 +269,19 @@ export async function verifyPaymentAction(requestId) {
     return false;
   }
 
-  // 3. Unlock the ticket for the user
+  const today = new Date().toISOString().slice(0, 10);
   const { error: unlockErr } = await supabase
     .from('unlocked_tickets')
     .insert({
       phone_number: req.phone_number,
       tier: req.tier,
-      date: req.date
+      date: today
     });
 
   if (unlockErr) {
-    // If it already exists, that's fine
-    if (unlockErr.code !== '23505') { 
-      console.error("[verifyPaymentAction] Unlock Error:", unlockErr);
-    }
+    if (unlockErr.code === '23505') return true; // Already unlocked
+    console.error("[verifyPaymentAction] Unlock Error:", unlockErr);
+    return false;
   }
 
   return true;
