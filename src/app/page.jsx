@@ -102,7 +102,7 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
         setIsPending(true);
         setShowTrModal(false);
       } else {
-        alert("Submission failed: " + (res.error?.message || "Check if payment_requests table exists."));
+        alert("Verification request could not be sent. Please try again or contact support if the issue persists.");
       }
     } catch (e) {
       console.error(e);
