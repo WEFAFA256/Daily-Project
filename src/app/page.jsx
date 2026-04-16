@@ -133,7 +133,10 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
       <div style={{marginBottom:18}}>
         <div style={{fontSize:10, color:t.textDim, fontWeight:900, letterSpacing:1.5, marginBottom:10, textTransform:"uppercase"}}>STEP 1: SELECT YOUR NETWORK</div>
         <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
-          {[{id:"mtn", lbl:"MTN MoMo", em:"🟡", c:"#FFD700"}, {id:"airtel", lbl:"Airtel Money", em:"🔴", c:"#FF3B5C"}].map(pm => (
+          {[
+            {id:"mtn", lbl:"MTN MoMo", img:"/mtn_logo.jpg", c:"#FFD700"}, 
+            {id:"airtel", lbl:"Airtel Money", img:"/airtel_logo.jpg", c:"#FF3B5C"}
+          ].map(pm => (
             <button key={pm.id} onClick={() => setPayMethod(pm.id)} style={{
               padding:"12px 10px", 
               border:`2px solid ${payMethod === pm.id ? pm.c : t.border}`, 
@@ -141,14 +144,15 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
               cursor:"pointer", 
               background:payMethod === pm.id ? `${pm.c}10` : t.surface, 
               display:"flex", 
+              flexDirection:"column",
               alignItems:"center", 
               justifyContent:"center",
               gap:8, 
               transition:"all 0.2s",
               position:"relative"
             }}>
-              <span style={{fontSize:18}}>{pm.em}</span>
-              <span style={{fontSize:12, fontWeight:900, color:payMethod === pm.id ? pm.c : t.textDim}}>{pm.lbl}</span>
+              <img src={pm.img} alt={pm.lbl} style={{height:24, width:"auto", borderRadius:4, objectFit:"contain"}} />
+              <span style={{fontSize:11, fontWeight:900, color:payMethod === pm.id ? pm.c : t.textDim}}>{pm.lbl}</span>
               {payMethod === pm.id && <div style={{position:"absolute", top:-6, right:-6, background:pm.c, color:"#000", width:18, height:18, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:900, border:`2px solid ${t.bg}`}}>✓</div>}
             </button>
           ))}
