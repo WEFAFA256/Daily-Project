@@ -299,6 +299,19 @@ export async function verifyPaymentAction(requestId) {
   return true;
 }
 
+export async function checkUnlockStatusAction(phone) {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from('unlocked_tickets')
+    .select('*')
+    .eq('phone_number', phone)
+    .eq('date', today)
+    .single();
+
+  if (error || !data) return false;
+  return true;
+}
+
 export async function getPaymentRequestsAction() {
   const { data, error } = await supabase
     .from('payment_requests')

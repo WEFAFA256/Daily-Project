@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import {
   getLatestAccumsAction,
   requestPaymentAction,
+  checkUnlockStatusAction,
 } from "./actions";
 
 // ─── TIER CONFIG ─────────────────────────────────────────────────────────────
@@ -101,6 +102,7 @@ function PayScreen({ accum, t, dark, onBack, onPaid }) {
       if (res.success) {
         setIsPending(true);
         setShowTrModal(false);
+        localStorage.setItem(`user-phone`, phone);
       } else {
         alert("Verification request could not be sent. Please try again or contact support if the issue persists.");
       }
@@ -292,12 +294,27 @@ function AccumCard({ accum, dark, t }) {
   const [activeAnalysis, setActiveAnalysis] = useState(null);
 
   useEffect(() => {
-    const dailyAccess = localStorage.getItem(`unlocked-daily-access-${new Date().toISOString().slice(0, 10)}`);
-    if (dailyAccess === "true") {
-      setUnlocked(true);
-    } else {
-      setUnlocked(accum.tier === "free");
-    }
+    const checkStatus = async () => {
+      // 1. Check local override first
+      const dailyAccess = localStorage.getItem(`unlocked-daily-access-${new Date().toISOString().slice(0, 10)}`);
+      if (dailyAccess === "true") {
+        setUnlocked(true);
+        return;
+      }
+      
+      // 2. Check DB using saved phone
+      const savedPhone = localStorage.getItem('user-phone');
+      if (savedPhone) {
+        const isActuallyUnlocked = await checkUnlockStatusAction(savedPhone);
+        if (isActuallyUnlocked) {
+          setUnlocked(true);
+          localStorage.setItem(`unlocked-daily-access-${new Date().toISOString().slice(0, 10)}`, "true");
+        }
+      } else {
+        setUnlocked(accum.tier === "free");
+      }
+    };
+    checkStatus();
   }, [accum.tier]);
 
   const handlePaid = (phone) => {
