@@ -1,7 +1,5 @@
 "use server";
 
-export const runtime = 'edge';
-
 import { createClient } from '@supabase/supabase-js';
 
 // Use service-role-capable client for server-side writes
