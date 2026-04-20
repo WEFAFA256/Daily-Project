@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configured via 'export const runtime = "edge"' in individual files
+  // Cloudflare Pages requires the edge runtime for server components/actions to work efficiently
+  experimental: {
+    runtime: 'edge',
+  },
 };
 
 export default nextConfig;

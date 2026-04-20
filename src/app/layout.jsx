@@ -1,7 +1,5 @@
 import "./globals.css";
 
-export const runtime = 'edge';
-
 export const viewport = {
   width: "device-width",
   initialScale: 1,
